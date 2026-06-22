@@ -1,57 +1,46 @@
-// Libraries from the STD library collection
 #include <cstdlib>
-#include <iostream>
-#include <ostream>
-#include <string>
+#include <fstream>
 #include <filesystem>
-#include <cstdlib>
+#include <iostream>
 
-// TASOSH headers from `include`
 #include <tasosh/config_sys/read_config.h>
-#include <tasosh/prompt.h>
-#include <tasosh/proc_files.h>
+#include <tasosh/colors.h>
 #include <tasosh/log.h>
 #include <tasosh/token.h>
 #include <tasosh/proc_exec.h>
-#include <tasosh/colors.h>
-#include <tasosh/init.h>
-
-// you need the readline library for the following includes
-#include <readline/history.h>
-#include <readline/readline.h>
 
 #include <unistd.h>
 
-int main(int argc, char **argv) {
+void proc_file(std::filesystem::path path){
 
-	namespace fs = std::filesystem;
-	namespace tk = tasosh::token;
+    namespace tk = tasosh::token;
+    namespace fs = std::filesystem;
 
-	init(argc, argv);
-	
-	while(true){
-		tasosh::token::tokens.clear(); // otherwise commands and args pile up
+    auto ext = path.extension();
 
-		char* line = readline(prompt().c_str());
+    if(ext != ".sh" && ext != ".tsh" && ext != ".tasosh"){
+        std::cout << BG_RED"FATAL ERROR: File does not end with accepted extensions. Please use .sh, .tsh or .tasosh" << RST << std::endl;
+        std::cout << FG_RED"Aborting..." << RST << std::endl;
 
-		if(!line) break; // EOF, ctrl-d
+        exit(EXIT_FAILURE);
+    }
 
-		std::string input = line;
-		free(line);
+    std::string text = { };
 
-		if (input == "exit") {
-			break;
-		}
+    std::ifstream file(path);
 
-		if(!input.empty()){
-			add_history(input.c_str()); // for ctrl + r, up arrow, etc
-		}
+    while(std::getline(file, text)){
+        tk::tokens.clear();
 
-		tasosh::token::tokenize(input);
+        if(tasosh::config_sys::read_config::is_comment(text)){
+            continue;
+        }
 
-		if (tk::tokens.empty()) continue;
+        tk::tokenize(text);
 
-		if(tk::tokens.at(0) == "cd") { // checks some builtins first.
+        if (tk::tokens.empty()) continue;
+
+        if(tk::tokens.at(0) == "cd") { // checks some builtins first.
         	if (tk::tokens.size() < 2){
             	chdir(std::getenv("HOME"));
         	} else {
@@ -70,7 +59,7 @@ int main(int argc, char **argv) {
 				}
 			}
 
-			std::cout << msg << std::endl;
+            std::cout << msg << std::endl;
 
 			continue;
 		} else if (tk::tokens.at(0) == "exit") {
@@ -90,7 +79,6 @@ int main(int argc, char **argv) {
 		}
 
 		proc_exec(tasosh::token::tokens);
-	}
-
-    return EXIT_SUCCESS;
+        
+    }
 }

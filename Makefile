@@ -1,6 +1,8 @@
 CXX = g++
 CXX_FLAGS = -Iinclude -std=c++17 -Wall -Wextra
-OBJ_FILES = main.o log.o config_vars.o read_config.o
+LDFLAGS = -lreadline -lncurses # LDFLAGS is for linking flags. keep CXX_FLAGS for compiler options
+OBJ_FILES = main.o log.o config_vars.o read_config.o prompt.o proc_files.o token.o proc_exec.o init.o
+
 
 ifeq ($(OS),Windows_NT)
 	RM = del /Q
@@ -8,8 +10,8 @@ else
 	RM = rm -f
 endif
 
-tasosh: $(OBJ_FILES)
-	$(CXX) $(OBJ_FILES) -o tasosh
+tasosh: $(OBJ_FILES) 
+	$(CXX) $(OBJ_FILES) -o tasosh $(LDFLAGS)
 
 main.o: src/main/main.cpp
 	$(CXX) $(CXX_FLAGS) src/main/main.cpp -c -o main.o
@@ -22,6 +24,21 @@ config_vars.o: src/main/config_sys/config_vars.cpp
 
 read_config.o: src/main/config_sys/read_config.cpp
 	$(CXX) $(CXX_FLAGS) src/main/config_sys/read_config.cpp -c -o read_config.o
+
+prompt.o: src/main/prompt.cpp
+	$(CXX) $(CXX_FLAGS) src/main/prompt.cpp -c -o prompt.o
+
+proc_files.o: src/main/proc_files.cpp
+	$(CXX) $(CXX_FLAGS) src/main/proc_files.cpp -c -o proc_files.o
+
+token.o: src/main/token.cpp
+	$(CXX) $(CXX_FLAGS) src/main/token.cpp -c -o token.o
+
+proc_exec.o: src/main/proc_exec.cpp
+	$(CXX) $(CXX_FLAGS) src/main/proc_exec.cpp -c -o proc_exec.o
+
+init.o: src/main/init.cpp
+	$(CXX) $(CXX_FLAGS) src/main/init.cpp -c -o init.o
 
 clean:
 	$(RM) *.o

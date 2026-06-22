@@ -6,12 +6,13 @@
 #include <string>
 #include <vector>
 
-#define VALUTE_TRUE value == "true"
+#define VALUE_TRUE value == "true"
 
 namespace tasosh::config_sys::read_config {
+    extern std::vector<std::string> configs;
     bool is_comment(std::string str);
+    void process_config();
     void read_config();
-    extern std::vector <std::string> configs;
-}
+} // namespace tasosh::config_sys::read_config
 
 #endif

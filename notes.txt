@@ -1,0 +1,9 @@
+you need dependencies such as make, g++ and the readline library to build
+
+to develop with clangd, please use bear, with the command `bear -- make`
+to build, just call the build.sh file on the build folder. For example if you are in the project root folder, do `build/build.sh`
+
+to set env vars: `export KEY VALUE`
+to unset env vars: `unset KEY`
+
+example script in etc/

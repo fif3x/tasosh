@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -6,11 +7,14 @@
 #include <tasosh/log.h>
 #include <tasosh/config_sys/config_vars.h>
 
+#define DEBUG_BUILD false
+
 std::vector<std::string> tasosh::log::logs = { };
+
 void tasosh::log::Log(std::string message, bool print){
     log::logs.push_back(message);
 
-    if(print){
+    if(print || DEBUG_BUILD){
         std::cout << "[LOG] " << message << std::endl;
     }
 
@@ -21,7 +25,7 @@ void tasosh::log::Log(std::string message, bool print){
 
         if(!file){
             std::cerr << "Cannot open file " << path << "\n";
-            exit(1);
+            exit(EXIT_FAILURE);
         }
 
         file << message << "\n";
