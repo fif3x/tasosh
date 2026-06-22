@@ -15,6 +15,7 @@
 #include <tasosh/proc_exec.h>
 #include <tasosh/colors.h>
 #include <tasosh/init.h>
+#include <tasosh/proc_pipe.h>
 
 // you need the readline library for the following includes
 #include <readline/history.h>
@@ -37,7 +38,6 @@ int main(int argc, char **argv) {
 		if(!line) break; // EOF, ctrl-d
 
 		std::string input = line;
-		free(line);
 
 		if (input == "exit") {
 			break;
@@ -50,6 +50,14 @@ int main(int argc, char **argv) {
 		tasosh::token::tokenize(input);
 
 		if (tk::tokens.empty()) continue;
+
+		size_t pipe_pos = find_pipe();
+        bool has_pipe = pipe_pos != tasosh::token::tokens.size();
+
+		if(has_pipe){
+    		proc_pipe(pipe_pos);
+    		continue;
+		}		
 
 		if(tk::tokens.at(0) == "cd") { // checks some builtins first.
         	if (tk::tokens.size() < 2){
@@ -87,9 +95,18 @@ int main(int argc, char **argv) {
 		} else if (tk::tokens.at(0) == "pwd") {
 			std::cout << fs::current_path() << std::endl;
 			continue;
+
+		} else if (tk::tokens.at(0) == "logs"){
+			for(size_t i = 0; i < tasosh::log::logs.size(); ++i) {
+				std::cout << tasosh::log::logs.at(i) << std::endl;
+			}
+
+			continue;
 		}
 
 		proc_exec(tasosh::token::tokens);
+
+		free(line);
 	}
 
     return EXIT_SUCCESS;

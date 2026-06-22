@@ -1,9 +1,13 @@
 #include <cstdlib>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <chrono>
+#include <ctime>
+#include <sstream>
 
 #include <tasosh/log.h>
 #include <tasosh/config_sys/config_vars.h>
@@ -15,7 +19,19 @@ std::vector<std::string> tasosh::log::logs = { };
 void tasosh::log::Log(std::string message, bool print){
     namespace fs = std::filesystem;
 
-    log::logs.push_back(message);
+    auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::tm* local_time = std::localtime(&time);
+
+    std::ostringstream oss = { };
+    oss << std::setfill('0') << 
+        std::setw(2) << local_time->tm_hour << ":" <<
+        std::setw(2) << local_time->tm_min << ":" <<
+        std::setw(2) << local_time->tm_sec;
+
+    std::string timestamp = oss.str();
+
+    log::logs.push_back("[" + timestamp + "][LOG] " + message);
 
     if(print || DEBUG_BUILD){
         std::cout << "[LOG] " << message << std::endl;
