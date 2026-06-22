@@ -1,6 +1,8 @@
 # tasosh
 Tasosh is a simple shell made for test and play purposes. The word `tasosh` is an acronym for "Tiny Adaptable Simple Open SHell", as the program tries to be lightweight, easy to configure, relatively easy in use & development, and being open source.
 
+A folder in the user home directory is created, (~/.config/tasosh) containing important files such as configuration
+
 # Installation
 To install the program, either download the binary from the GitHub releases, or build it from source. Here is how to build it from source:
 

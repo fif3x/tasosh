@@ -35,9 +35,7 @@ void rc::process_config() {
             value = rc::configs.at(index).substr(it +1);
         }
 
-        if (key == "auto_exec"){
-            if(VALUE_TRUE) tasosh::config_sys::config_vars::auto_exec = true;
-        } else if (key == "keep_arg_on_logs"){
+        if (key == "keep_arg_on_logs"){
             if(VALUE_TRUE) tasosh::config_sys::config_vars::keep_arg_on_logs = true;
         } else if (key == "save_logs_to_file"){
             if(VALUE_TRUE) tasosh::config_sys::config_vars::save_logs_to_file = true;
@@ -45,8 +43,6 @@ void rc::process_config() {
             tasosh::config_sys::config_vars::raw_prompt = value;
         } else if (key == "debug_mode"){
             if(VALUE_TRUE) tasosh::config_sys::config_vars::debug_mode = true;
-        } else if (key == "apply_plugins"){
-            if(VALUE_TRUE) tasosh::config_sys::config_vars::apply_plugins = true;
         } else {
             std::cerr << BG_RED"FATAL ERROR: UNKNOWN CONFIGURATION KEY: " << key << RST << std::endl;
             std::cerr << BG_RED "Aborting..." << RST << std::endl;

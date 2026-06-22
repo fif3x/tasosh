@@ -6,8 +6,6 @@
 #include <string>
 
 namespace tasosh::config_sys::config_vars {
-    // general configs
-    extern bool auto_exec;
 
     // logs configs
     extern bool keep_arg_on_logs;
@@ -18,9 +16,6 @@ namespace tasosh::config_sys::config_vars {
 
     // debug configs
     extern bool debug_mode;
-
-    // plugins configs
-    extern bool apply_plugins;
 
 }
 

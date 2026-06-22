@@ -2,9 +2,6 @@
 
 #include <string>
 
-// general configs
-bool tasosh::config_sys::config_vars::auto_exec = { };
-
 // logs configs
 bool tasosh::config_sys::config_vars::keep_arg_on_logs = { };
 bool tasosh::config_sys::config_vars::save_logs_to_file = { };
@@ -14,6 +11,3 @@ std::string tasosh::config_sys::config_vars::raw_prompt = { "%USER%@%HOST%:%POS%
 
 // debug configs
 bool tasosh::config_sys::config_vars::debug_mode = { };
-
-// plugins configs
-bool tasosh::config_sys::config_vars::apply_plugins = { };
