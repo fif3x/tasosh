@@ -10,4 +10,6 @@ NOTES FOR USERS
 To set env vars: `export KEY VALUE`
 To unset env vars: `unset KEY`
 
+Alias format on configuration file: `alias=name=command`
+
 There is an example script given in the folder etc, as well as a working configuration

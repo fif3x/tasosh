@@ -23,5 +23,11 @@ you can also use the `-dbg` flag when running the build script, and it will laun
 
 4. Run  either `tasosh` in your command line if you used sudo in the script, or run `bin/tasosh` if you didnt.
 
+# Notes
+Please take a look into notes.txt
+
 # Development
 To develop this program further or build it from source, you need `g++`, `make`, `git`, the library "readline", and if you use clangd, you need `bear` and run it with `bear -- make`
+
+# License
+This program is under the GNU General Public License v3. For more information, please look into the LICENSE file
