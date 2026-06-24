@@ -1,13 +1,15 @@
-#include "tasosh/colors.h"
-#include "tasosh/log.h"
-#include <cstdlib>
 #include <tasosh/config_sys/config_vars.h>
 #include <tasosh/config_sys/read_config.h>
+#include <tasosh/log.h>
+#include <tasosh/colors.h>
+#include <tasosh/alias.h>
+#include <tasosh/token.h>
 
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstdlib>
 #include <vector>
 
 namespace fs = std::filesystem;
@@ -43,6 +45,22 @@ void rc::process_config() {
             tasosh::config_sys::config_vars::raw_prompt = value;
         } else if (key == "debug_mode"){
             if(VALUE_TRUE) tasosh::config_sys::config_vars::debug_mode = true;
+        } else if (key == "alias") {
+            auto equ_sign = value.find('=');
+
+            std::string name = { };
+            std::string cmd = { };
+
+            if(equ_sign != std::string::npos){
+                name = value.substr(0, equ_sign);
+                cmd = value.substr(equ_sign + 1);
+            }
+
+            tasosh::token::tokens.clear();
+            tasosh::token::tokenize(cmd);
+
+            alias.emplace(name, tasosh::token::tokens);
+
         } else {
             std::cerr << BG_RED"FATAL ERROR: UNKNOWN CONFIGURATION KEY: " << key << RST << std::endl;
             std::cerr << BG_RED "Aborting..." << RST << std::endl;

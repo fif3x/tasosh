@@ -8,9 +8,9 @@
 #include <unistd.h> // for most things that are related to fork(), execvp() et
 #include <sys/wait.h> // for waitpid()
 
-void proc_exec(std::vector<std::string> args_str){
+void proc_exec(const std::vector<std::string>& args_str){
 
-    std::vector<char*> args = { };
+    std::vector<const char*> args = { };
 
     for (auto& arg : args_str){
         args.push_back(arg.data());
@@ -21,7 +21,7 @@ void proc_exec(std::vector<std::string> args_str){
     pid_t pid = fork();
 
     if(pid == 0){ // this is the child process
-        execvp(args[0], args.data()); // args.data() brings back the data execvp() requires because args is a std::vector<char*>
+        execvp(args[0], const_cast<char* const*>(args.data())); // const_cast because we change constantness
 
         perror("execvp");
         exit(EXIT_FAILURE);

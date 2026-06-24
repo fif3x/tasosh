@@ -16,6 +16,7 @@
 #include <tasosh/colors.h>
 #include <tasosh/init.h>
 #include <tasosh/proc_pipe.h>
+#include <tasosh/alias.h>
 
 // you need the readline library for the following includes
 #include <readline/history.h>
@@ -38,6 +39,7 @@ int main(int argc, char **argv) {
 		if(!line) break; // EOF, ctrl-d
 
 		std::string input = line;
+		free(line);
 
 		if (input == "exit") {
 			break;
@@ -50,6 +52,17 @@ int main(int argc, char **argv) {
 		tasosh::token::tokenize(input);
 
 		if (tk::tokens.empty()) continue;
+
+		if(!tk::tokens.empty() && alias.count(tk::tokens.at(0))){
+			std::vector<std::string> expanded = alias[tk::tokens[0]];
+
+			for(size_t index = 1; index < tk::tokens.size(); ++index){
+				expanded.push_back(tk::tokens.at(index));
+			}
+
+			tk::tokens = expanded;
+
+		}
 
 		size_t pipe_pos = find_pipe();
         bool has_pipe = pipe_pos != tasosh::token::tokens.size();
@@ -85,11 +98,19 @@ int main(int argc, char **argv) {
 			exit(EXIT_SUCCESS);
 
 		} else if (tk::tokens.at(0) == "export") {
-			setenv(tk::tokens.at(1).c_str(), tk::tokens.at(2).c_str(), 1);
+			if (tk::tokens.size() >= 3) {
+        		setenv(tk::tokens.at(1).c_str(), tk::tokens.at(2).c_str(), 1);
+    		} else {
+        		std::cerr << "export: usage: export NAME VALUE\n";
+    		}
 			continue;
 
 		} else if (tk::tokens.at(0) == "unset") {
-			unsetenv(tk::tokens.at(1).c_str());
+			if (tk::tokens.size() >= 2) {
+        		unsetenv(tk::tokens.at(1).c_str());
+    		} else {
+        		std::cerr << "unset: usage: unset NAME\n";
+    		}
 			continue;
 
 		} else if (tk::tokens.at(0) == "pwd") {
@@ -106,7 +127,6 @@ int main(int argc, char **argv) {
 
 		proc_exec(tasosh::token::tokens);
 
-		free(line);
 	}
 
     return EXIT_SUCCESS;

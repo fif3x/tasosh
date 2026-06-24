@@ -34,8 +34,6 @@ void init(int arg_c, char **arg_v){
 		exit(EXIT_SUCCESS);
 	}
 
-	proc_exec(startup());
-
     using_history();
     tasosh::log::Log("Turned history on", false);
 
@@ -44,5 +42,8 @@ void init(int arg_c, char **arg_v){
 
 	tasosh::config_sys::read_config::process_config();
     tasosh::log::Log("Processed config", false);
+
+	proc_exec(startup());
+	tasosh::log::Log("Processed startup commands", false);
 
 }

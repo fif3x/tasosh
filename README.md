@@ -4,7 +4,7 @@ Tasosh is a simple shell made for test and play purposes. The word `tasosh` is a
 A folder in the user home directory is created, (~/.config/tasosh) containing important files such as configuration
 
 # Installation
-To install the program, either download the binary from the GitHub releases, or build it from source. Here is how to build it from source:
+To install the program, either **download the binary from the GitHub releases**, or **build it from source**. Here is how to build it from source:
 
 1. Copy the project's codebase with git:
 ```bash
@@ -24,4 +24,4 @@ you can also use the `-dbg` flag when running the build script, and it will laun
 4. Run  either `tasosh` in your command line if you used sudo in the script, or run `bin/tasosh` if you didnt.
 
 # Development
-To develop this program further or build it from source, you need `g++`, `make`, `git`, and if you use clangd, you need `bear` and run it with `bear -- make`
+To develop this program further or build it from source, you need `g++`, `make`, `git`, the library "readline", and if you use clangd, you need `bear` and run it with `bear -- make`

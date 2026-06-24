@@ -1,7 +1,7 @@
 CXX = g++
 CXX_FLAGS = -Iinclude -std=c++17 -Wall -Wextra
 LDFLAGS = -lreadline -lncurses # LDFLAGS is for linking flags. keep CXX_FLAGS for compiler options
-OBJ_FILES = main.o log.o config_vars.o read_config.o prompt.o proc_files.o token.o proc_exec.o init.o startup.o proc_pipe.o
+OBJ_FILES = main.o log.o config_vars.o read_config.o prompt.o proc_files.o token.o proc_exec.o init.o startup.o proc_pipe.o alias.o
 
 
 ifeq ($(OS),Windows_NT)
@@ -45,6 +45,9 @@ startup.o: src/main/startup.cpp
 
 proc_pipe.o: src/main/proc_pipe.cpp
 	$(CXX) $(CXX_FLAGS) src/main/proc_pipe.cpp -c -o proc_pipe.o
+
+alias.o: src/main/alias.cpp
+	$(CXX) $(CXX_FLAGS) src/main/alias.cpp -c -o alias.o
 
 clean:
 	$(RM) *.o
