@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 fif3x
+// This program is licensed under the GNU General Public License v3. Please look into the LICENSE file of the root folder for more info.
+
 // Libraries from the STD library collection
 #include <cstdlib>
 #include <iostream>

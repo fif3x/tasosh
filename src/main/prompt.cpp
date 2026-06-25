@@ -1,4 +1,7 @@
-#include "tasosh/colors.h"
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 fif3x
+
+#include <tasosh/colors.h>
 #include <tasosh/prompt.h>
 #include <tasosh/config_sys/config_vars.h>
 

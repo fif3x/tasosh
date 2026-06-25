@@ -29,5 +29,6 @@ Please take a look into notes.txt
 # Development
 To develop this program further or build it from source, you need `g++`, `make`, `git`, the library "readline", and if you use clangd, you need `bear` and run it with `bear -- make`
 
-# License
+# License and Copyright
+Copyright (C) 2026 fif3x
 This program is under the GNU General Public License v3. For more information, please look into the LICENSE file
