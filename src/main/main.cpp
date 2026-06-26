@@ -51,6 +51,7 @@ int main(int argc, char **argv) {
 
 		if(!input.empty()){
 			add_history(input.c_str()); // for ctrl + r, up arrow, etc
+			tasosh::log::Log(input, false);
 		}
 
 		tasosh::token::tokenize(input);
@@ -122,8 +123,8 @@ int main(int argc, char **argv) {
 			continue;
 
 		} else if (tk::tokens.at(0) == "logs"){
-			for(size_t i = 0; i < tasosh::log::logs.size(); ++i) {
-				std::cout << tasosh::log::logs.at(i) << std::endl;
+			for(size_t index = 0; index < tasosh::log::logs.size(); ++index) {
+				std::cout << tasosh::log::logs.at(index) << std::endl;
 			}
 
 			continue;

@@ -66,7 +66,7 @@ void rc::process_config() {
 
         } else {
             std::cerr << BG_RED"FATAL ERROR: UNKNOWN CONFIGURATION KEY: " << key << RST << std::endl;
-            std::cerr << BG_RED "Aborting..." << RST << std::endl;
+            std::cerr << BG_RED"Aborting..." << RST << std::endl;
             
             exit(EXIT_FAILURE);
         }

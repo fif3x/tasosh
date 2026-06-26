@@ -14,3 +14,8 @@ ls
 echo and now lets delete it
 rm file.txt
 ls
+
+# lets create a variable
+var foo=bar
+# and then print it
+echo The value of the variable foo is [ $(foo) ]

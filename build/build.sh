@@ -25,11 +25,17 @@ if sudo -v 2>/dev/null; then
     if [ "$1" == "-dbg" ]; then
         tasosh
         echo "tasosh returned with code $?"
+    elif [ "$1" == "-dbg-script" ]; then
+        tasosh etc/script.tsh
+        echo "tasosh return with code $?"
     fi
 else
     echo "You do not have sudo privileges."
     if [ "$1" == "-dbg" ]; then
         bin/tasosh
         echo "tasosh returned with code $?"
+    elif [ "$1" == "-dbg-script" ]; then
+        tasosh etc/script.tsh
+        echo "tasosh return with code $?"
     fi
 fi

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <filesystem>
 #include <iostream>
+#include <unordered_map>
 
 #include <tasosh/config_sys/read_config.h>
 #include <tasosh/colors.h>
@@ -13,6 +14,8 @@
 #include <tasosh/proc_exec.h>
 
 #include <unistd.h>
+
+std::unordered_map<std::string, std::string> vars;
 
 void proc_file(std::filesystem::path path){
 
@@ -42,6 +45,40 @@ void proc_file(std::filesystem::path path){
         tk::tokenize(text);
 
         if (tk::tokens.empty()) continue;
+
+		for (size_t index = 0; index < tk::tokens.size(); ++index) {
+			if (tk::tokens[index].size() < 4) continue; // it means that it was $() so skip it
+
+			if(tk::tokens[index].at(0) != '$' || tk::tokens[index].at(1) != '(' || tk::tokens[index].back() != ')') continue; // incorrect syntax
+
+			std::string var_name = tk::tokens[index].substr(2, tk::tokens[index].size() - 3); // $( and )
+
+			auto it = vars.find(var_name);
+
+			if(it == vars.end()) continue;
+
+			tk::tokens[index] = it->second;
+
+		}
+
+		if(tk::tokens.at(0) == "var") {
+			auto it = tk::tokens.at(1).find('=');
+
+			std::string name = { };
+			std::string val = { };
+
+			if (it != std::string::npos){
+            	name = tk::tokens.at(1).substr(0, it);
+            	val = tk::tokens.at(1).substr(it + 1);
+        	}
+
+			vars[name] = val;
+
+			tasosh::log::Log("NAME: [" + name + "]", true);
+			tasosh::log::Log("VAL: [" + val + "]", true);
+
+			continue;
+		}
 
         if(tk::tokens.at(0) == "cd") { // checks some builtins first.
         	if (tk::tokens.size() < 2){

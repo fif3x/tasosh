@@ -7,7 +7,11 @@
 #define PROC_FILES_H
 
 #include <filesystem>
+#include <string>
+#include <unordered_map>
 
+
+extern std::unordered_map<std::string, std::string> vars;
 void proc_file(std::filesystem::path file);
 
 #endif

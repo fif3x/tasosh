@@ -3,10 +3,10 @@
 
 #include <cstdlib>
 #include <sys/types.h>
-#include <tasosh/proc_exec.h>
-
 #include <vector>
 #include <string>
+
+#include <tasosh/proc_exec.h>
 
 #include <unistd.h> // for most things that are related to fork(), execvp() et
 #include <sys/wait.h> // for waitpid()
