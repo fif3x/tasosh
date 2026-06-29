@@ -1,21 +1,6 @@
 # this is a comment
-echo This is an example message
-
-echo This directory is
-pwd
-
-echo And has
-ls
-
-echo Lets create a file
-touch file.txt
-ls
-
-echo and now lets delete it
-rm file.txt
-ls
-
-# lets create a variable
+echo Example message
 var foo=bar
-# and then print it
-echo The value of the variable foo is [ $(foo) ]
+
+if $(foo) == bar
+    echo Variable foo is equal to bar!

@@ -20,7 +20,6 @@ std::unordered_map<std::string, std::string> vars;
 void proc_file(std::filesystem::path path){
 
     namespace tk = tasosh::token;
-    namespace fs = std::filesystem;
 
     auto ext = path.extension();
 
@@ -35,30 +34,38 @@ void proc_file(std::filesystem::path path){
 
     std::ifstream file(path);
 
+	std::vector<std::string> lines = { };
+
     while(std::getline(file, text)){
-        tk::tokens.clear();
 
         if(tasosh::config_sys::read_config::is_comment(text)){
             continue;
         }
 
-        tk::tokenize(text);
+		lines.push_back(text);
 
-        if (tk::tokens.empty()) continue;
+	}
 
-		for (size_t index = 0; index < tk::tokens.size(); ++index) {
-			if (tk::tokens[index].size() < 4) continue; // it means that it was $() so skip it
+	for(size_t index = 0; index < lines.size(); ++index){
+		tk::tokens.clear();
+		tk::tokenize(lines.at(index));
 
-			if(tk::tokens[index].at(0) != '$' || tk::tokens[index].at(1) != '(' || tk::tokens[index].back() != ')') continue; // incorrect syntax
+		if (tk::tokens.empty()) continue;
 
-			std::string var_name = tk::tokens[index].substr(2, tk::tokens[index].size() - 3); // $( and )
+		for(size_t j = 0; j < tk::tokens.size(); ++j){
+			if(tk::tokens[j].at(0) == '$') {
+				if(tk::tokens[j].at(1) != '(' || tk::tokens[j].back() != ')') continue; // wrong variable syntax, skipping
+			}
+
+			if(tk::tokens[j].size() < 4) continue; // means that syntax was `$()`, so no name variable
+
+			std::string var_name = tk::tokens[j].substr(2, tk::tokens[j].size() - 3); // $( and )
 
 			auto it = vars.find(var_name);
 
 			if(it == vars.end()) continue;
 
-			tk::tokens[index] = it->second;
-
+			tk::tokens[j] = it->second;
 		}
 
 		if(tk::tokens.at(0) == "var") {
@@ -80,45 +87,32 @@ void proc_file(std::filesystem::path path){
 			continue;
 		}
 
-        if(tk::tokens.at(0) == "cd") { // checks some builtins first.
-        	if (tk::tokens.size() < 2){
-            	chdir(std::getenv("HOME"));
-        	} else {
-            	chdir(tk::tokens.at(1).c_str());
-        	}
+		if(tk::tokens.at(0) == "if"){
 
-			continue; // skip to next iteration
+			if(tk::tokens.at(2) == "=="){ // tk::tokens.at(2) is the operator.
+				if(tk::tokens.at(1) == tk::tokens.at(3)) { // true
+					
 
-    	} else if (tk::tokens.at(0) == "echo") {
-			std::string msg = { };
+					for(size_t j = index + 1; j < lines.size(); ++j){
+						tk::tokens.clear();
+						tk::tokenize(lines[j]);
 
-			for(size_t i = 1; i < tk::tokens.size(); ++i){
-				msg += tk::tokens.at(i);
-				if(i + 1 < tk::tokens.size()){
-					msg += " "; // otherwise words will be stuck together
+						proc_exec(tasosh::token::tokens);
+
+						if(!tk::tokens.empty() && tk::tokens[0] == "endif") {
+							index = j;
+							break;
+						}
+					}
+				} else { // false
+
 				}
 			}
 
-            std::cout << msg << std::endl;
-
-			continue;
-		} else if (tk::tokens.at(0) == "exit") {
-			exit(EXIT_SUCCESS);
-
-		} else if (tk::tokens.at(0) == "export") {
-			setenv(tk::tokens.at(1).c_str(), tk::tokens.at(2).c_str(), 1);
-			continue;
-
-		} else if (tk::tokens.at(0) == "unset") {
-			unsetenv(tk::tokens.at(1).c_str());
-			continue;
-
-		} else if (tk::tokens.at(0) == "pwd") {
-			std::cout << fs::current_path() << std::endl;
 			continue;
 		}
 
 		proc_exec(tasosh::token::tokens);
-        
-    }
+	}
+
 }

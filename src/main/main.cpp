@@ -4,11 +4,7 @@
 
 // Libraries from the STD library collection
 #include <cstdlib>
-#include <iostream>
-#include <ostream>
 #include <string>
-#include <filesystem>
-#include <cstdlib>
 
 // TASOSH headers from `include`
 #include <tasosh/config_sys/read_config.h>
@@ -30,7 +26,6 @@
 
 int main(int argc, char **argv) {
 
-	namespace fs = std::filesystem;
 	namespace tk = tasosh::token;
 
 	init(argc, argv);
@@ -76,59 +71,6 @@ int main(int argc, char **argv) {
     		proc_pipe(pipe_pos);
     		continue;
 		}		
-
-		if(tk::tokens.at(0) == "cd") { // checks some builtins first.
-        	if (tk::tokens.size() < 2){
-            	chdir(std::getenv("HOME"));
-        	} else {
-            	chdir(tk::tokens.at(1).c_str());
-        	}
-
-			continue; // skip to next iteration
-
-    	} else if (tk::tokens.at(0) == "echo") {
-			std::string msg = { };
-
-			for(size_t i = 1; i < tk::tokens.size(); ++i){
-				msg += tk::tokens.at(i);
-				if(i + 1 < tk::tokens.size()){
-					msg += " "; // otherwise words will be stuck together
-				}
-			}
-
-			std::cout << msg << std::endl;
-
-			continue;
-		} else if (tk::tokens.at(0) == "exit") {
-			exit(EXIT_SUCCESS);
-
-		} else if (tk::tokens.at(0) == "export") {
-			if (tk::tokens.size() >= 3) {
-        		setenv(tk::tokens.at(1).c_str(), tk::tokens.at(2).c_str(), 1);
-    		} else {
-        		std::cerr << "export: usage: export NAME VALUE\n";
-    		}
-			continue;
-
-		} else if (tk::tokens.at(0) == "unset") {
-			if (tk::tokens.size() >= 2) {
-        		unsetenv(tk::tokens.at(1).c_str());
-    		} else {
-        		std::cerr << "unset: usage: unset NAME\n";
-    		}
-			continue;
-
-		} else if (tk::tokens.at(0) == "pwd") {
-			std::cout << fs::current_path() << std::endl;
-			continue;
-
-		} else if (tk::tokens.at(0) == "logs"){
-			for(size_t index = 0; index < tasosh::log::logs.size(); ++index) {
-				std::cout << tasosh::log::logs.at(index) << std::endl;
-			}
-
-			continue;
-		}
 
 		proc_exec(tasosh::token::tokens);
 
