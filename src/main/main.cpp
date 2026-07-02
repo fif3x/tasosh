@@ -53,6 +53,9 @@ int main(int argc, char **argv) {
 
 		if (tk::tokens.empty()) continue;
 
+		expand_vars();
+		expand_tilde();
+
 		if(!tk::tokens.empty() && alias.count(tk::tokens.at(0))){
 			std::vector<std::string> expanded = alias[tk::tokens[0]];
 

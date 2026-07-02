@@ -29,11 +29,36 @@ void expand_vars(){
 
 		std::string var_name = tk::tokens[j].substr(2, tk::tokens[j].size() - 3); // $( and )
 
-		auto it = vars.find(var_name);
+		const char* value = std::getenv(var_name.c_str()); 
+		if(value != nullptr){
+			tk::tokens[j] = value;
+		} else {
+			auto it = vars.find(var_name);
 
-		if(it == vars.end()) continue;
+			if(it == vars.end()) continue;
 
-		tk::tokens[j] = it->second;
+			tk::tokens[j] = it->second;
+		}
+	}
+}
+
+void expand_tilde(){
+	namespace tk = tasosh::token;
+
+	const char* HOME = std::getenv("HOME");
+
+	if(!HOME) return;
+
+	for (size_t index = 0; index < tk::tokens.size(); ++index){
+		if(tk::tokens[index].empty()) continue;
+
+		if(tk::tokens[index].at(0) != '~') continue;
+
+		if(tk::tokens[index] == "~") {
+			tk::tokens[index] = HOME;
+		} else if (tk::tokens[index].size() > 1 && tk::tokens[index].at(1) == '/') {
+			tk::tokens[index].replace(0, 1, HOME);
+		}
 	}
 }
 
@@ -71,6 +96,9 @@ void proc_file(std::filesystem::path path){
 		tk::tokenize(lines.at(index));
 
 		if (tk::tokens.empty()) continue;
+
+		expand_vars();
+		expand_tilde();
 
 		if(tk::tokens.at(0) == "var") {
 			auto it = tk::tokens.at(1).find('=');

@@ -3,6 +3,23 @@ Tasosh is a simple shell made for test and play purposes. The word `tasosh` is a
 
 A folder in the user home directory is created, (~/.config/tasosh) containing important files such as configuration
 
+
+# Features
+- Pipes
+- Aliases
+- Scripts
+- Environmental variable handling
+- Variables
+- Startup list (see #Start-Up)
+
+# Start-Up
+One of the features in tasosh is a start-up list. The commands in this list are being executed when tasosh starts. To add commands, create a file named `startup.txt` in the `~/.config/tasosh/` folder, and put the commands you want to execute when starting up. Note that startup commands do not support variables or enviromental variables. Put each command you want to execute in each line, following a format similar to this:
+```
+cmd arg -flag
+foo bar
+example_command
+```
+
 # Installation
 To install the program, either **download the binary from the GitHub releases**, or **build it from source**. Here is how to build it from source:
 

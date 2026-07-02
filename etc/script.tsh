@@ -12,3 +12,10 @@ else
 echo Probably right
 endif
 
+echo
+echo Lets now print the path env variable: $(PATH)
+echo And see our home: $(HOME)
+echo
+
+echo Maybe even see the contents of our config file
+cat ~/.config/tasosh/tasosh.conf
