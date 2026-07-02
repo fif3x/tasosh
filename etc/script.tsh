@@ -1,6 +1,14 @@
 # this is a comment
 echo Example message
-var foo=bar
 
-if $(foo) == bar
-    echo Variable foo is equal to bar!
+var foo=bar
+echo The value of foo is $(foo)
+
+if $(foo) == baz
+echo Somehow foo is equal to baz!
+elif $(foo) == bzz
+echo This shouldnt be printed!
+else
+echo Probably right
+endif
+

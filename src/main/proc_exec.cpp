@@ -15,6 +15,8 @@
 
 void proc_exec(const std::vector<std::string>& args_str){
 
+    if(args_str[0] == "if" || args_str[0] == "elif" || args_str[0] == "else" || args_str[0] == "endif") return;
+
     if(args_str.at(0) == "cd") { // checks some builtins first.
         if (args_str.size() < 2){
          	chdir(std::getenv("HOME"));

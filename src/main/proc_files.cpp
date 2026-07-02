@@ -17,6 +17,26 @@
 
 std::unordered_map<std::string, std::string> vars;
 
+void expand_vars(){
+	namespace tk = tasosh::token;
+
+	for(size_t j = 0; j < tk::tokens.size(); ++j){
+		if(tk::tokens[j].at(0) == '$') {
+			if(tk::tokens[j].at(1) != '(' || tk::tokens[j].back() != ')') continue; // wrong variable syntax, skipping
+		}
+
+		if(tk::tokens[j].size() < 4) continue; // means that syntax was `$()`, so no name variable
+
+		std::string var_name = tk::tokens[j].substr(2, tk::tokens[j].size() - 3); // $( and )
+
+		auto it = vars.find(var_name);
+
+		if(it == vars.end()) continue;
+
+		tk::tokens[j] = it->second;
+	}
+}
+
 void proc_file(std::filesystem::path path){
 
     namespace tk = tasosh::token;
@@ -52,22 +72,6 @@ void proc_file(std::filesystem::path path){
 
 		if (tk::tokens.empty()) continue;
 
-		for(size_t j = 0; j < tk::tokens.size(); ++j){
-			if(tk::tokens[j].at(0) == '$') {
-				if(tk::tokens[j].at(1) != '(' || tk::tokens[j].back() != ')') continue; // wrong variable syntax, skipping
-			}
-
-			if(tk::tokens[j].size() < 4) continue; // means that syntax was `$()`, so no name variable
-
-			std::string var_name = tk::tokens[j].substr(2, tk::tokens[j].size() - 3); // $( and )
-
-			auto it = vars.find(var_name);
-
-			if(it == vars.end()) continue;
-
-			tk::tokens[j] = it->second;
-		}
-
 		if(tk::tokens.at(0) == "var") {
 			auto it = tk::tokens.at(1).find('=');
 
@@ -81,38 +85,62 @@ void proc_file(std::filesystem::path path){
 
 			vars[name] = val;
 
-			tasosh::log::Log("NAME: [" + name + "]", true);
-			tasosh::log::Log("VAL: [" + val + "]", true);
-
 			continue;
 		}
 
-		if(tk::tokens.at(0) == "if"){
+		if (tk::tokens[0] == "if") {
 
-			if(tk::tokens.at(2) == "=="){ // tk::tokens.at(2) is the operator.
-				if(tk::tokens.at(1) == tk::tokens.at(3)) { // true
-					
+    		auto eval_cond = [&]() -> bool {
+            	if (tk::tokens.size() >= 4 && tk::tokens[2] == "==") {
+                	return tk::tokens[1] == tk::tokens[3];
+            	}
+            	return false;
+        	};
 
-					for(size_t j = index + 1; j < lines.size(); ++j){
-						tk::tokens.clear();
-						tk::tokenize(lines[j]);
+        	bool matched = false;
+        	bool condition = false;
 
-						proc_exec(tasosh::token::tokens);
+        	condition = eval_cond();
+        	matched = condition;
 
-						if(!tk::tokens.empty() && tk::tokens[0] == "endif") {
-							index = j;
-							break;
-						}
-					}
-				} else { // false
+        	for (size_t i = index + 1; i < lines.size(); ++i) {
+				tk::tokens.clear();
 
+            	tk::tokenize(lines.at(i));
+				expand_vars();
+				
+            	if (tk::tokens.empty()) continue;
+
+            	if (tk::tokens[0] == "elif") {
+                	if (!matched) {
+                    	if (tk::tokens.size() >= 4 && tk::tokens[2] == "==") {
+                        	condition = (tk::tokens[1] == tk::tokens[3]);
+                    	} else {
+                        	condition = false;
+                    	}
+                    	matched = condition;
+                	}
+                	continue;
+            	}
+
+            	if (tk::tokens[0] == "else") {
+                	matched = !matched;
+                	continue;
+            	}
+
+            	if (tk::tokens[0] == "endif") {
+                	index = i + 1;
+                	break;
 				}
-			}
+            	if (matched) {
+                	proc_exec(tk::tokens);
+            	}
+        	}
 
-			continue;
-		}
+        	continue;
+    	}
 
-		proc_exec(tasosh::token::tokens);
+		proc_exec(tk::tokens);
 	}
 
 }

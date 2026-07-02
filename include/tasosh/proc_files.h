@@ -12,6 +12,7 @@
 
 
 extern std::unordered_map<std::string, std::string> vars;
+void expand_vars();
 void proc_file(std::filesystem::path file);
 
 #endif
